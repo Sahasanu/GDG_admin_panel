@@ -1,5 +1,6 @@
 "use client";
 
+import { HeartHandshake } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -25,7 +26,7 @@ const navItems = [
     ),
   },
   {
-    name: "Events",
+    name: "Event",
     href: "/admin/events",
     icon: (
       <svg
@@ -67,21 +68,8 @@ const navItems = [
   {
     name: "Recruitment",
     href: "/admin/recruitment",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-6 w-6"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 5.472m0 0a9.09 9.09 0 00-3.279 3.298m.944-5.483A.049.049 0 016 15.75c0 .327.025.65.074.968.049.317.132.622.247.91l-.22.285m6-10.49c-1.657 0-3-.895-3-2s1.343-2 3-2 3 .895 3 2-1.343 2-3 2z"
-        />
-      </svg>
+     icon: (
+      <HeartHandshake strokeWidth={1.5} size={20}/>
     ),
   },
   {
@@ -115,8 +103,8 @@ export default function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#141417] border-t border-zinc-800 pb-safe">
-      <div className="flex items-center justify-around px-2 py-2">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-md border-t border-white/10 pb-safe">
+      <div className="flex items-center justify-around p-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
           
@@ -124,16 +112,16 @@ export default function MobileNav() {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center justify-center min-w-0 flex-1 py-2 px-1 rounded-lg transition-colors ${
+              className={`flex flex-col items-center justify-center min-w-0 flex-1 py-1 px-1 rounded-xl transition-all duration-200 active:scale-90 ${
                 isActive
-                  ? "text-blue-500"
-                  : "text-zinc-400 hover:text-white"
+                  ? "text-white bg-white/5"
+                  : "text-zinc-500 hover:text-white"
               }`}
             >
-              <div className={`${isActive ? "text-blue-500" : "text-zinc-400"}`}>
+              <div className={`transition-transform duration-200 ${isActive ? "scale-110" : ""}`}>
                 {item.icon}
               </div>
-              <span className="text-[10px] mt-1 font-medium truncate w-full text-center">
+              <span className={`text-[10px] mt-1 font-semibold truncate w-full text-center transition-opacity duration-200 ${isActive ? "opacity-100" : "opacity-70"}`}>
                 {item.name}
               </span>
             </Link>

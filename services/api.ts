@@ -154,10 +154,43 @@ export const eventsApi = {
     );
   },
 
+  updateEventContactInfo: (eventId: string, contactInfo: any[]) => {
+    return apiClient.put(
+      getApiEndpoint(`/events/${eventId}/contact`),
+      { contactInfo }
+    );
+  },
+
   getEventParticipants: (eventId: string) => {
     return apiClient.get<EventParticipantsResponse>(
       getApiEndpoint(`/event-participant/sheet/${eventId}`)
     );
+  },
+
+  // Gallery
+  uploadGallery: (id: string, galleryImages: string[]) => {
+    return apiClient.post(getApiEndpoint(`/event-gallery/${id}`), { galleryImages });
+  },
+
+  updateGallery: (id: string, galleryImages: string[], imagesToRemove: string[]) => {
+    return apiClient.put(getApiEndpoint(`/event-gallery/${id}`), { galleryImages, imagesToRemove });
+  },
+};
+
+// -------------------------------------------------------------------
+// REVIEWS API
+// -------------------------------------------------------------------
+export const reviewsApi = {
+  getReviewsByEvent: (eventId: string) => {
+    return apiClient.get(getApiEndpoint(`/get-reviews/${eventId}`));
+  },
+
+  deleteReview: (reviewId: string) => {
+    return apiClient.delete(getApiEndpoint(`/delete-review/${reviewId}`));
+  },
+
+  getAllReviews: () => {
+    return apiClient.get(getApiEndpoint('/get-all-reviews'));
   },
 };
 
@@ -251,6 +284,21 @@ export const recruitmentApi = {
 };
 
 // -------------------------------------------------------------------
+// ANALYTICS API
+// -------------------------------------------------------------------
+export const analyticsApi = {
+  getUserAnalytics: () => {
+    return apiClient.get(getApiEndpoint('/getUserAnalytics'));
+  },
+  getRecruitmentAnalytics: () => {
+    return apiClient.get(getApiEndpoint('/getRecruitmentAnalytics'));
+  },
+  getAllUsers: (params?: any) => {
+    return apiClient.get(getApiEndpoint('/getAllUsers'), { params });
+  },
+};
+
+// -------------------------------------------------------------------
 // SUPER ADMIN API
 // -------------------------------------------------------------------
 export const superAdminApi = {
@@ -298,4 +346,5 @@ export default {
   events: eventsApi,
   recruitment: recruitmentApi,
   superAdmin: superAdminApi,
+  analytics: analyticsApi,
 };

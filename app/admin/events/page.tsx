@@ -8,6 +8,7 @@ import { Event } from "@/types";
 import Image from "next/image";
 import { EventCardSkeleton } from "@/components/admin/events/EventCardSkeleton";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Header from "./Sections/Header";
 
 export default function EventsPage() {
   const router = useRouter();
@@ -88,32 +89,45 @@ export default function EventsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filter events based on search query and active filter
-  const filteredEvents = events.filter((event) => {
-    const matchesSearch =
-      event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.category.toLowerCase().includes(searchQuery.toLowerCase());
+  const [sortBy, setSortBy] = useState<"name" | "date">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-    // If active filter is 'all', return all events that match the search
-    if (activeFilter === "all") {
-      return matchesSearch;
-    }
+  // Filter and Sort events based on search query, active filter and sort preferences
+  const filteredEvents = events
+    .filter((event) => {
+      const matchesSearch =
+        event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.category.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // Filter by upcoming/past status
-    if (activeFilter === "upcoming") {
-      return matchesSearch && event.is_upcoming;
-    } else if (activeFilter === "past") {
-      return matchesSearch && !event.is_upcoming;
-    } else if (activeFilter === "registration_open") {
-      return matchesSearch && event.registration_open;
-    }
+      // If active filter is 'all', return all events that match the search
+      if (activeFilter === "all") {
+        return matchesSearch;
+      }
 
-    // Filter by category
-    const matchesFilter = event.category.toLowerCase() === activeFilter.toLowerCase();
-    return matchesSearch && matchesFilter;
-  });
+      // Filter by upcoming/past status
+      if (activeFilter === "upcoming") {
+        return matchesSearch && event.is_upcoming;
+      } else if (activeFilter === "past") {
+        return matchesSearch && !event.is_upcoming;
+      } else if (activeFilter === "registration_open") {
+        return matchesSearch && event.registration_open;
+      }
+
+      // Filter by category
+      const matchesFilter = event.category.toLowerCase() === activeFilter.toLowerCase();
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => {
+      let comparison = 0;
+      if (sortBy === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortBy === "date") {
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
 
   // Function to format date
   const formatDate = (dateString: string) => {
@@ -232,84 +246,7 @@ export default function EventsPage() {
 
   return (
     <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      <div className="mb-4 sm:mb-6 flex flex-col space-y-3 sm:space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center px-1 sm:px-3">
-            <h1 className="text-xl sm:text-2xl font-semibold text-white">Events</h1>
-            <span className="ml-2 sm:ml-4 text-xs sm:text-sm shadow-md text-white border border-zinc-900 p-1 px-2 rounded-full bg-[#18181B]">
-              {filteredEvents.length}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <button
-              aria-label="Refresh events"
-              onClick={refreshEvents}
-              className="flex items-center justify-center rounded-full bg-blue-500 p-2 sm:px-3 sm:py-1 text-sm text-white shadow-sm hover:bg-[#141417] border border-zinc-900"
-              disabled={isLoading}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 sm:h-6 sm:w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-            </button>
-            <button
-              onClick={() => router.push('/admin/events/add')}
-              className="flex items-center rounded-full bg-blue-500 px-4 sm:px-8 py-2 sm:py-2.5 text-sm sm:text-base text-white shadow-sm hover:bg-blue-600"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-1 h-5 w-5 sm:h-6 sm:w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span className="hidden sm:inline">Add Event</span>
-              <span className="sm:hidden">Add</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-3 border border-zinc-900 px-2 bg-[#18181B] py-2 rounded-lg sm:rounded-full shadow-md">
-          <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`rounded-full text-white px-3 py-1 text-xs sm:text-sm capitalize whitespace-nowrap ${activeFilter === filter
-                  ? "bg-blue-500 text-white font-medium"
-                  : "bg-[#141417] text-white hover:bg-zinc-800"
-                  }`}
-              >
-                {filter === "all" ? "All" : filter === "registration_open" ? "Reg Open" : filter}
-              </button>
-            ))}
-          </div>
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-full bg-[#141417] text-white shadow-sm px-4 py-2 text-sm border border-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-zinc-500"
-          />
-        </div>
-      </div>
+     <Header filteredEvents={filteredEvents} refreshEvents={refreshEvents} isLoading={isLoading} setActiveFilter={setActiveFilter} activeFilter={activeFilter} filters={filters} searchQuery={searchQuery} setSearchQuery={setSearchQuery} sortBy={sortBy} setSortBy={setSortBy} sortOrder={sortOrder} setSortOrder={setSortOrder} router={router} />
 
       <div className="space-y-6">
         {error ? (

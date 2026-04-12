@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { isSuperAdmin } from "@/utils/roleCheck";
+import { ShieldUser,SquareActivity,HeartHandshake   } from 'lucide-react';
+
 
 // Navigation items for the sidebar
 const navItems = [
@@ -48,7 +51,7 @@ const navItems = [
     ),
   },
   {
-    name: "Events",
+    name: "Event",
     href: "/admin/events",
     icon: (
       <svg
@@ -71,25 +74,12 @@ const navItems = [
     name: "Recruitment",
     href: "/admin/recruitment",
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-5 w-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 5.472m0 0a9.09 9.09 0 00-3.279 3.298m.944-5.483A.049.049 0 016 15.75c0 .327.025.65.074.968.049.317.132.622.247.91l-.22.285m6-10.49c-1.657 0-3-.895-3-2s1.343-2 3-2 3 .895 3 2-1.343 2-3 2z"
-        />
-      </svg>
+      <HeartHandshake strokeWidth={1.5} size={20}/>
     ),
   },
   {
     name: "Settings",
-    href: "/admin/settings",
+    href: "/admin/Settings",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -121,40 +111,14 @@ const superAdminNavItems = [
     name: "Admin Management",
     href: "/admin/superadmin/admins",
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-5 w-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M17.982 18.725A7.488 7.488 0 0012 15a7.5 7.5 0 11-5.982 3.725M9 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
+     <ShieldUser strokeWidth={1.5} size={20}/>
     ),
   },
   {
     name: "Activity Logs",
     href: "/admin/superadmin/activity-logs",
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-5 w-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3.042.525A9.006 9.006 0 002.25 9m12-7.5h-1.5a1.5 1.5 0 00-1.5 1.5v6.75a1.5 1.5 0 001.5 1.5h1.5m0-9v6m0 0a1.5 1.5 0 001.5 1.5h1.5c1.6 0 3-1.35 3-3V9m-4.5-2.25A2.25 2.25 0 0016.5 5.25"
-        />
-      </svg>
+   <SquareActivity strokeWidth={1.5} size={20}/>
     ),
   },
 ];
@@ -175,7 +139,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed = false }: Sideba
       {/* Mobile overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black z-40 lg:hidden"
           onClick={onClose}
         />
       )}
@@ -183,46 +147,64 @@ export default function Sidebar({ isOpen, onClose, isCollapsed = false }: Sideba
       {/* Sidebar */}
       <aside className={`
         fixed lg:static inset-y-0 left-0 z-50
-        bg-[#141417] text-white border-r border-zinc-900
-        transform transition-all duration-300 ease-in-out
+        bg-black backdrop-blur-md text-white border-r border-white/10
+        transition-all duration-300 ease-in-out shadow-2xl
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        ${isCollapsed ? 'lg:w-20' : 'w-56'}
+        ${isCollapsed ? 'lg:w-20' : 'w-64'}
+        flex flex-col
+        overflow-hidden
+        scrollbar-hide
       `}>
-        <div className={`p-4 flex items-center ${isCollapsed ? 'lg:justify-center' : 'justify-between'}`}>
-          {!isCollapsed && <h1 className="text-lg sm:text-xl font-bold text-white">GDG Admin</h1>}
+        <div className={`pt-4 pl-8    flex items-center ${isCollapsed ? 'lg:justify-center' : 'justify-between'}`}>
+          {!isCollapsed && (
+            <div className="flex gap-4 items-center">
+              <Image
+                src="/logo-gdg.png"
+                alt="GDG Logo"
+                width={50}
+                height={2}
+                className="w-10 h-5 "
+                priority
+              />
+              <h1 className="text-xl font-bold text-white tracking-tight">GDG</h1>
+            </div>
+          )}
           <button
             onClick={onClose}
-            className="lg:hidden p-1 text-white hover:bg-zinc-800 rounded"
+            className="lg:hidden p-2 text-white hover:bg-white/10 rounded-xl transition-all active:scale-90"
             aria-label="Close menu"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <nav className="mt-8">
-          <ul className={`space-y-2 ${isCollapsed ? 'lg:px-0' : 'px-2'}`}>
+
+        <nav className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-2 scrollbar-hide">
+          <ul className="space-y-1">
             {navItems.map((item) => (
-              <li key={item.name} className={isCollapsed ? 'lg:flex lg:justify-center' : ''}>
+              <li key={item.name}>
                 <Link
                   href={item.href}
                   onClick={() => onClose()}
-                  className={`flex items-center rounded-lg transition-all group relative ${
+                  className={`flex items-center rounded-xl transition-all duration-200 group relative ${
                     isCollapsed 
-                      ? 'lg:p-3 lg:w-14 lg:h-14 lg:justify-center' 
+                      ? 'lg:p-3 lg:w-12 lg:h-12 lg:mx-auto lg:justify-center' 
                       : 'px-4 py-2'
-                  } text-sm ${pathname === item.href
-                    ? "bg-blue-500 text-white"
-                    : "text-white hover:bg-[#18181B]"
+                  } ${pathname === item.href
+                    ? "bg-white/10 text-white border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
                     }`}
                   title={isCollapsed ? item.name : undefined}
                 >
-                  <span className="flex-shrink-0">{item.icon}</span>
-                  {!isCollapsed && <span className="ml-3">{item.name}</span>}
+                  <span className={`flex-shrink-0 transition-transform duration-200 ${pathname === item.href ? 'scale-110' : 'group-hover:scale-110'}`}>
+                    {item.icon}
+                  </span>
+                  {!isCollapsed && <span className="ml-3 font-medium">{item.name}</span>}
                   
                   {/* Tooltip for collapsed mode */}
                   {isCollapsed && (
-                    <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#27272A] text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                    <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-10 shadow-xl ml-2">
                       {item.name}
                     </span>
                   )}
@@ -234,47 +216,52 @@ export default function Sidebar({ isOpen, onClose, isCollapsed = false }: Sideba
             {superAdmin && (
               <>
                 {!isCollapsed && (
-                  <li className="px-4 py-3 mt-6">
-                    <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Super Admin</h3>
+                  <li className="px-4 py-2 mt-4">
+                    <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Super Admin</h3>
                   </li>
                 )}
-                {superAdminNavItems.map((item) => (
-                  <li key={item.name} className={isCollapsed ? 'lg:flex lg:justify-center' : ''}>
-                    <Link
-                      href={item.href}
-                      onClick={() => onClose()}
-                      className={`flex items-center rounded-lg transition-all group relative ${
-                        isCollapsed 
-                          ? 'lg:p-3 lg:w-14 lg:h-14 lg:justify-center' 
-                          : 'px-4 py-2'
-                      } text-sm ${pathname.startsWith(item.href.split('/').slice(0, -1).join('/'))
-                        ? "bg-blue-500 text-white"
-                        : "text-white hover:bg-[#18181B]"
-                        }`}
-                      title={isCollapsed ? item.name : undefined}
-                    >
-                      <span className="flex-shrink-0">{item.icon}</span>
-                      {!isCollapsed && <span className="ml-3">{item.name}</span>}
-                      
-                      {/* Tooltip for collapsed mode */}
-                      {isCollapsed && (
-                        <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#27272A] text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                          {item.name}
+                <div className="space-y-1">
+                  {superAdminNavItems.map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        onClick={() => onClose()}
+                        className={`flex items-center rounded-xl transition-all duration-200 group relative ${
+                          isCollapsed 
+                            ? 'lg:p-3 lg:w-12 lg:h-12 lg:mx-auto lg:justify-center' 
+                            : 'px-4 py-2'
+                        } ${pathname.startsWith(item.href.split('/').slice(0, -1).join('/'))
+                          ? "bg-white/10 text-white border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+                          : "text-zinc-400 hover:text-white hover:bg-white/5"
+                          }`}
+                        title={isCollapsed ? item.name : undefined}
+                      >
+                        <span className={`flex-shrink-0 transition-transform duration-200 ${pathname.startsWith(item.href) ? 'scale-110' : 'group-hover:scale-110'}`}>
+                          {item.icon}
                         </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
+                        {!isCollapsed && <span className="ml-3 font-medium">{item.name}</span>}
+                        
+                        {/* Tooltip for collapsed mode */}
+                        {isCollapsed && (
+                          <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-10 shadow-xl ml-2">
+                            {item.name}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </div>
               </>
             )}
           </ul>
         </nav>
-        <div className={`absolute bottom-0 left-0 right-0 p-4 border-t border-zinc-900 ${isCollapsed ? 'lg:flex lg:justify-center' : ''}`}>
+
+        <div className="p-4 mt-auto border-t border-white/10">
           <button
             onClick={logout}
-            className={`flex items-center rounded-lg transition-all group relative text-sm text-white hover:bg-[#18181B] ${
+            className={`flex items-center rounded-xl transition-all duration-200 group relative text-zinc-400 hover:text-red-400 hover:bg-red-500/10 ${
               isCollapsed 
-                ? 'lg:p-3 lg:w-14 lg:h-14 lg:justify-center' 
+                ? 'lg:p-3 lg:w-12 lg:h-12 lg:mx-auto lg:justify-center' 
                 : 'w-full px-4 py-2'
             }`}
             title={isCollapsed ? 'Logout' : undefined}
@@ -285,7 +272,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed = false }: Sideba
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="h-5 w-5 flex-shrink-0"
+              className="h-5 w-5 flex-shrink-0 transition-transform group-hover:-translate-x-1"
             >
               <path
                 strokeLinecap="round"
@@ -293,11 +280,11 @@ export default function Sidebar({ isOpen, onClose, isCollapsed = false }: Sideba
                 d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
               />
             </svg>
-            {!isCollapsed && <span className="ml-3">Logout</span>}
+            {!isCollapsed && <span className="ml-3 font-medium">Logout</span>}
             
             {/* Tooltip for collapsed mode */}
             {isCollapsed && (
-              <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-[#27272A] text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+              <span className="absolute left-16 top-1/2 -translate-y-1/2 bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-10 shadow-xl ml-2">
                 Logout
               </span>
             )}

@@ -126,6 +126,7 @@ export type Event = {
   details: string;
   is_upcoming: boolean;
   registration_open: boolean;
+  whatsappLink?: string;
   eventBanner?: {
     public_id: string;
     url: string;
@@ -157,23 +158,25 @@ export type EventsResponse = {
   events: Event[];
 };
 
+export type Participant = {
+  _id: string;
+  user: string;
+  event: string;
+  name: string;
+  classRollNo: string;
+  department: string;
+  phoneNumber: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
 // Event participants response type
 export type EventParticipantsResponse = {
   success: boolean;
   totalParticipants: number;
-  participants: Array<{
-    _id: string;
-    user: string;
-    event: string;
-    name: string;
-    classRollNo: string;
-    department: string;
-    phoneNumber: string;
-    email: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }>;
+  participants: Participant[];
 };
 
 // Recruitment Form Types
@@ -331,4 +334,26 @@ export type ActivityLogsSummaryResponse = {
       to: string;
     };
   };
+};
+
+// ========== REVIEW TYPES ==========
+
+export type Review = {
+  _id: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+  event: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReviewsResponse = {
+  success: boolean;
+  reviews: Review[];
 };

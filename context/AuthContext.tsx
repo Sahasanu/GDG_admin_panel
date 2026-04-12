@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: Props) => {
     Cookies.set("user", JSON.stringify(userData), { expires: 1 });
     
     setUser(userData);
-    router.push("/admin/members");
+    router.push("/admin");
   };
 
   const logout = async () => {

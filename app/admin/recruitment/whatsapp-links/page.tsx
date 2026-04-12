@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { RecruitmentForm } from "@/types";
 import { recruitmentApi } from "@/services/api";
-import PageHeader from "@/components/admin/PageHeader";
+import PageHeader from "@/app/admin/recruitment/Sections/PageHeader";
 import RecruitmentFormsList from "@/components/admin/recruitment/RecruitmentFormsList";
 import WhatsAppLinksManager from "@/components/admin/recruitment/WhatsAppLinksManager";
 import { MessageCircle } from "lucide-react";
@@ -14,7 +15,10 @@ interface ApiErrorResponse {
   message?: string;
 }
 
-export default function WhatsAppLinksPage() {
+function WhatsAppLinksContent() {
+  const searchParams = useSearchParams();
+  const formIdParam = searchParams.get("formId");
+
   const [forms, setForms] = useState<RecruitmentForm[]>([]);
   const [selectedFormId, setSelectedFormId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
@@ -58,9 +62,14 @@ export default function WhatsAppLinksPage() {
 
   useEffect(() => {
     if (forms.length > 0 && !selectedFormId) {
-      setSelectedFormId(forms[0]._id);
+      if (formIdParam && forms.some(f => f._id === formIdParam)) {
+        setSelectedFormId(formIdParam);
+        loadFormDetails(formIdParam);
+      } else {
+        setSelectedFormId(forms[0]._id);
+      }
     }
-  }, [forms, selectedFormId]);
+  }, [forms, selectedFormId, formIdParam, loadFormDetails]);
 
   const handleFormSelect = (formId: string) => {
     setSelectedFormId(formId);
@@ -153,5 +162,17 @@ export default function WhatsAppLinksPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WhatsAppLinksPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#09090B] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </div>
+    }>
+      <WhatsAppLinksContent />
+    </Suspense>
   );
 }

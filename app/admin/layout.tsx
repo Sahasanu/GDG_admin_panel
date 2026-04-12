@@ -44,18 +44,25 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-black">
+    <div className="flex h-screen overflow-hidden bg-[#0A0A0B] text-white">
       <Sidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)}
         isCollapsed={sidebarCollapsed}
       />
+      
       <div className="flex flex-col flex-1 min-w-0">
         <Header 
           onMenuClick={() => setSidebarOpen(true)}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
-        <main className="flex-1 min-h-0 overflow-y-auto pb-16 lg:pb-0">{children}</main>
+        
+        <main className="flex-1 min-h-0 overflow-y-auto  custom-scrollbar">
+          <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {children}
+          </div>
+        </main>
+        
         <MobileNav />
       </div>
     </div>

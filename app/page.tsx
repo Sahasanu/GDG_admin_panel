@@ -13,8 +13,13 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading) {
-      if (isAuthenticated && (user?.role === "super_admin" || user?.role === "domain_lead")) {
-        router.push("/admin/members");
+      if (isAuthenticated && user?.role && user.role !== "user") {
+        // Redirect to members page if they have specific roles, otherwise to general admin
+        if (user.role === "super_admin" || user.role === "domain_lead") {
+          router.push("/admin/members");
+        } else {
+          router.push("/admin");
+        }
       } else if (isAuthenticated) {
         router.push("/unauthorized");
       }

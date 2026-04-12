@@ -4,14 +4,14 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { recruitmentApi } from "@/services/api";
 import toast from "react-hot-toast";
-import PageHeader from "@/components/admin/PageHeader";
+import PageHeader from "@/app/admin/recruitment/Sections/PageHeader";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { 
-    Users, 
-    Edit, 
-    Trash2, 
-    Calendar, 
-    CheckCircle2, 
+import {
+    Users,
+    Edit,
+    Trash2,
+    Calendar,
+    CheckCircle2,
     XCircle,
     ArrowRight,
     Clock,
@@ -47,7 +47,7 @@ export default function RecruitmentDashboard() {
                 recruitmentApi.getAllForms(),
                 recruitmentApi.getStats()
             ]);
-            
+
             const formsData = formsRes.data.forms || [];
             setForms(formsData);
 
@@ -122,7 +122,7 @@ export default function RecruitmentDashboard() {
         }
         return matchesSearch;
     });
- 
+
     // Stats
     const totalForms = forms.length;
     const activeForms = forms.filter((f) => f.isActive).length;
@@ -157,23 +157,7 @@ export default function RecruitmentDashboard() {
                     activeFilter={statusFilter}
                     onFilterChange={(key) => setStatusFilter(key as "all" | "active" | "inactive")}
                 />
-                
-                {/* WhatsApp Links Management Button */}
-                <button
-                    onClick={() => router.push("/admin/recruitment/whatsapp-links")}
-                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
-                    title="Manage WhatsApp group links for recruitment roles"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        className="w-5 h-5"
-                    >
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.759.975-.929 1.175-.168.198-.339.223-.637.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-2.753 1.663-4.538 4.571-4.538 7.6 0 1.213.21 2.398.603 3.519l-1.32 4.82c-.36 1.211.902 2.3 1.996 1.972l4.687-1.522c1.062.472 2.219.742 3.4.742 5.517 0 10-4.483 10-10S17.32 2.75 11.802 2.75c-5.517 0-10 4.483-10 10"></path>
-                    </svg>
-                    WhatsApp Links
-                </button>
+
             </div>
 
             {/* Forms List */}
@@ -252,9 +236,8 @@ export default function RecruitmentDashboard() {
                                 className="group relative flex flex-col justify-between cursor-pointer rounded-[24px] bg-[#121214] p-6 shadow-2xl transition-all hover:shadow-indigo-500/20 border border-zinc-800/80 hover:border-indigo-500/60"
                             >
                                 {/* Activity Background Gradient */}
-                                <div className={`absolute -right-20 -top-20 h-48 w-48 rounded-full blur-[100px] transition-opacity duration-700 ${
-                                    form.isActive ? "bg-green-500/10 opacity-70 group-hover:opacity-100" : "bg-zinc-500/5 opacity-30"
-                                }`} />
+                                <div className={`absolute -right-20 -top-20 h-48 w-48 rounded-full blur-[100px] transition-opacity duration-700 ${form.isActive ? "bg-green-500/10 opacity-70 group-hover:opacity-100" : "bg-zinc-500/5 opacity-30"
+                                    }`} />
 
                                 <div className="relative space-y-6">
                                     <div className="flex items-start justify-between">
@@ -347,9 +330,30 @@ export default function RecruitmentDashboard() {
                                             </button>
                                             <span className="text-[9px] font-bold uppercase text-zinc-500 tracking-tighter">Delete</span>
                                         </div>
+
+                                        <div className="flex flex-col items-center gap-1.5">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    router.push(`/admin/recruitment/whatsapp-links?formId=${form._id}`);
+                                                }}
+                                                className="flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-800 text-zinc-400 hover:bg-green-600 hover:text-white transition-all active:scale-95 border border-zinc-700/50"
+                                                title="Manage WhatsApp Links"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    className="w-5 h-5"
+                                                >
+                                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.759.975-.929 1.175-.168.198-.339.223-.637.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-2.753 1.663-4.538 4.571-4.538 7.6 0 1.213.21 2.398.603 3.519l-1.32 4.82c-.36 1.211.902 2.3 1.996 1.972l4.687-1.522c1.062.472 2.219.742 3.4.742 5.517 0 10-4.483 10-10S17.32 2.75 11.802 2.75c-5.517 0-10 4.483-10 10"></path>
+                                                </svg>
+                                            </button>
+                                            <span className="text-[9px] font-bold uppercase text-zinc-500 tracking-tighter">Links</span>
+                                        </div>
                                     </div>
 
-                                    <div 
+                                    <div
                                         className="hidden sm:flex items-center gap-2 text-xs font-black text-indigo-400 uppercase tracking-widest group-hover:gap-3 transition-all"
                                     >
                                         Open View

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { isSuperAdmin } from "@/utils/roleCheck";
 import { superAdminApi } from "@/services/api";
 import { Admin } from "@/types";
-import PageHeader from "@/components/admin/PageHeader";
+import PageHeader from "@/app/admin/recruitment/Sections/PageHeader";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
@@ -45,7 +45,7 @@ export default function AdminManagementPage() {
         assignedDomains: [] as string[]
     });
 
-    const [search, setSearch] = useState(""); 
+    const [search, setSearch] = useState("");
 
     const [editData, setEditData] = useState({
         role: "",
@@ -474,7 +474,7 @@ export default function AdminManagementPage() {
                             {(editData.role === "domain_lead") && (
                                 <div className="space-y-3">
                                     <label className="block text-sm font-medium text-blue-400">Assigned Domains ({editData.assignedDomains.length})</label>
-                                    
+
                                     {/* Edit Modal Search */}
                                     <input
                                         type="text"

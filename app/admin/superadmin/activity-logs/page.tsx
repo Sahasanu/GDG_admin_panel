@@ -6,22 +6,22 @@ import { useRouter } from "next/navigation";
 import { isSuperAdmin } from "@/utils/roleCheck";
 import { superAdminApi } from "@/services/api";
 import { ActivityLog } from "@/types";
-import PageHeader from "@/components/admin/PageHeader";
+import PageHeader from "@/app/admin/recruitment/Sections/PageHeader";
 import { toast } from "sonner";
 
-import { 
-    Activity, 
-    ShieldCheck, 
-    User, 
-    Calendar, 
-    Clock, 
-    Filter, 
-    ChevronLeft, 
-    ChevronRight,
-    ArrowRightCircle,
-    Info,
-    Mail,
-    Globe
+import {
+  Activity,
+  ShieldCheck,
+  User,
+  Calendar,
+  Clock,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRightCircle,
+  Info,
+  Mail,
+  Globe
 } from "lucide-react";
 
 type ActionType = "add_admin" | "remove_admin" | "shortlist" | "reject" | "accept" | "update_status" | "";
@@ -44,13 +44,13 @@ export default function ActivityLogsPage() {
         limit,
         page,
       };
-      
+
       if (selectedAction) {
         params.action = selectedAction;
       }
 
       const response = await superAdminApi.getActivityLogs(params);
-      
+
       if (response.data.success) {
         setLogs(response.data.logs);
         setTotalLogs(response.data.pagination?.total || response.data.totalLogs || 0);
@@ -116,8 +116,8 @@ export default function ActivityLogsPage() {
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 p-4 md:p-8 selection:bg-indigo-500/30">
       <div className="max-w-[1400px] mx-auto">
-        <PageHeader 
-          title="Admin Activity Vault" 
+        <PageHeader
+          title="Admin Activity Vault"
           subtitle="Real-time audit log of system operations and member management"
         />
 
@@ -154,7 +154,7 @@ export default function ActivityLogsPage() {
         {/* Logs Table Container */}
         <div className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-[28px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          
+
           <div className="relative bg-[#121214] rounded-[24px] border border-zinc-800/80 shadow-2xl overflow-hidden">
             {loading && logs.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-[500px]">
@@ -254,7 +254,7 @@ export default function ActivityLogsPage() {
               <span className="text-zinc-700">|</span>
               <span>Total {totalLogs} Events</span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
@@ -272,11 +272,10 @@ export default function ActivityLogsPage() {
                     <button
                       key={p}
                       onClick={() => setPage(p)}
-                      className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${
-                        p === page
+                      className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${p === page
                           ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
                           : "hover:bg-zinc-800 text-zinc-500"
-                      }`}
+                        }`}
                     >
                       {p}
                     </button>

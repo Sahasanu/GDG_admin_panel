@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { membersApi, eventsApi, usersApi } from "@/services/api";
+import { membersApi, eventsApi, usersApi, analyticsApi } from "@/services/api";
 import {
   Users,
   UserCheck,
@@ -36,17 +36,19 @@ export default function DashboardPage() {
   const fetchDashboardData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [usersResponse, membersResponse, eventsResponse] = await Promise.all([
-        usersApi.getAllUsers().catch(() => ({ data: { users: [] } })),
+      const [analyticsResponse, membersResponse, eventsResponse] = await Promise.all([
+        analyticsApi.getUserAnalytics().catch(() => ({ data: { data: { totalUsers: 0, allUsers: [] } } })),
         membersApi.getAllMembers().catch(() => ({ data: { members: [] } })),
         eventsApi.getAllEvents().catch(() => ({ data: { events: [] } })),
       ]);
 
-      type SimpleUser = { name: string; createdAt: string };
+      const analyticsData = analyticsResponse.data?.data || { totalUsers: 0, allUsers: [] };
+      const totalUsersCount = analyticsData.totalUsers || 0;
+      const allUsers = analyticsData.allUsers || [];
+
       type SimpleMember = { name: string; createdAt: string };
       type SimpleEvent = { is_upcoming: boolean };
 
-      const users = (usersResponse.data?.users as SimpleUser[]) || [];
       const members = (membersResponse.data?.members as SimpleMember[] | { members: SimpleMember[] }) || [] as unknown as SimpleMember[];
       const membersArray: SimpleMember[] = Array.isArray(members)
         ? members
@@ -54,14 +56,14 @@ export default function DashboardPage() {
       const events = (eventsResponse.data?.events as SimpleEvent[]) || [];
 
       setStats({
-        totalUsers: users.length,
+        totalUsers: totalUsersCount,
         totalMembers: membersArray.length,
         totalEvents: events.length,
         activeRecruitmentForms: 0,
       });
 
       const recentItems: RecentActivityItem[] = [
-        ...users.slice(-3).map((u): RecentActivityItem => ({
+        ...allUsers.slice(0, 5).map((u: any): RecentActivityItem => ({
           type: 'user',
           title: `New user: ${u.name}`,
           time: new Date(u.createdAt).toLocaleDateString(),
@@ -71,7 +73,7 @@ export default function DashboardPage() {
           title: `New member: ${m.name}`,
           time: new Date(m.createdAt).toLocaleDateString(),
         })),
-      ].slice(-5);
+      ].slice(0, 5);
 
       setRecentActivity(recentItems);
     } catch (error) {
